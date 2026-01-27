@@ -8,7 +8,7 @@ Table: employees
 | dept             | varchar |
 +------------------+---------+
 emp_id is the unique key for this table.
-Each row of this table contains information about an employee including their ID, salary, and department.
+Each row of this table contains information about an employee including their ID, salary, and department
 Write a solution to find the employees who earn the second-highest salary in each department. If multiple employees have the second-highest salary, include all employees with that salary.
 
 Return the result table ordered by emp_id in ascending order.
