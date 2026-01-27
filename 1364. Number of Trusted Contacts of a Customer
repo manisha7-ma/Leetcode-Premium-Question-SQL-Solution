@@ -1,0 +1,99 @@
+Table: employees
+
++------------------+---------+
+| Column Name      | Type    |
++------------------+---------+
+| emp_id           | int     |
+| salary           | int     |
+| dept             | varchar |
++------------------+---------+
+emp_id is the unique key for this table.
+Each row of this table contains information about an employee including their ID, salary, and department.
+Write a solution to find the employees who earn the second-highest salary in each department. If multiple employees have the second-highest salary, include all employees with that salary.
+
+Return the result table ordered by emp_id in ascending order.
+
+The result format is in the following example.
+
+ 
+
+Example:
+
+Input:
+
+employees table:
+
++--------+--------+-----------+
+| emp_id | salary | dept      |
++--------+--------+-----------+
+| 1      | 70000  | Sales     |
+| 2      | 80000  | Sales     |
+| 3      | 80000  | Sales     |
+| 4      | 90000  | Sales     |
+| 5      | 55000  | IT        |
+| 6      | 65000  | IT        |
+| 7      | 65000  | IT        |
+| 8      | 50000  | Marketing |
+| 9      | 55000  | Marketing |
+| 10     | 55000  | HR        |
++--------+--------+-----------+
+Output:
+
++--------+-----------+
+| emp_id | dept      |
++--------+-----------+
+| 2      | Sales     |
+| 3      | Sales     |
+| 5      | IT        |
+| 8      | Marketing |
++--------+-----------+
+Explanation:
+
+Sales Department:
+Highest salary is 90000 (emp_id: 4)
+Second-highest salary is 80000 (emp_id: 2, 3)
+Both employees with salary 80000 are included
+IT Department:
+Highest salary is 65000 (emp_id: 6, 7)
+Second-highest salary is 55000 (emp_id: 5)
+Only emp_id 5 is included as they have the second-highest salary
+Marketing Department:
+Highest salary is 55000 (emp_id: 9)
+Second-highest salary is 50000 (emp_id: 8)
+Employee 8 is included
+HR Department:
+Only has one employee
+Not included in the result as it has fewer than 2 employees
+
+
+
+SOLUTION 
+
+# Write your MySQL query statement below
+with cte as( 
+select a.invoice_id , b.customer_name ,a.price ,a.user_id from Invoices as a 
+join Customers as b 
+on b.customer_id  =a.user_id
+order by invoice_id
+),
+cte2 as (
+select user_id, count(*) as total from Contacts
+group by user_id
+)
+
+select cte.invoice_id , cte.customer_name ,cte.price ,COALESCE(cte2.total,0) as contacts_cnt  ,
+COALESCE(c.trusted_contacts_cnt,0) AS trusted_contacts_cnt 
+from cte left join cte2 
+on 
+cte.user_id=cte2.user_id
+left join 
+(
+select Contacts.user_id,count(*) as  trusted_contacts_cnt  from 
+Contacts  join Customers
+on Contacts.contact_email  =Customers.email 
+group by Contacts.user_id
+)  as  c 
+On c.user_id=cte.user_id
+order by cte.invoice_id
+ 
+
