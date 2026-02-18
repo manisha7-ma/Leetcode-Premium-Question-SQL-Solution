@@ -74,6 +74,7 @@ Output:
 
 SOLUTION
 
+# Write your MySQL query statement below
 with cte as (
 select * , 
 case when host_goals>guest_goals then host_team 
@@ -84,16 +85,17 @@ end as win
 from Matches
 ) 
 
+
 select b.team_id ,b.team_name,COALESCE(sum(a.num_points),0) as num_points from 
 Teams as b 
 LEFT JOIN
 (
 select win as team_id ,count(*) *3 as num_points from cte where win is not null
 group by win
-union  
+union  all 
 select host_team ,count(*) as score from cte where win is null 
 group by host_team
-union  
+union  all
 select guest_team ,count(*) as score from cte where win is null  
 group by guest_team
 ) a
