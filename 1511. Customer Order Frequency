@@ -95,3 +95,26 @@ Jonathan spent $600 (300 * 2) in June and $20 ( 2 * 10) in July 2020.
 Moustafa spent $110 (10 * 2 + 45 * 2) in June and $0 in July 2020.
 
 SOLUTION
+# Write your MySQL query statement below
+select customer_id,customer_name  as name
+from 
+(
+select customer_id,name as customer_name ,date_format(order_date,'%Y-%m'),
+case when sum(spent)>=100 then 1 else 0 end as cou
+from
+(
+select Orders.customer_id,Orders.product_id,quantity*price as spent ,order_date,name
+from Orders
+LEFT JOIN Product
+On Orders.product_id=Product.product_id
+Left Join 
+Customers 
+on Orders.customer_id=Customers.customer_id
+) s
+where 
+date_format(order_date,'%Y-%m')='2020-06' or 
+date_format(order_date,'%Y-%m')='2020-07'
+group by customer_id,date_format(order_date,'%Y-%m')
+) a 
+group by customer_id
+HAVING sum(cou)=2
